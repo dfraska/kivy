@@ -112,7 +112,11 @@ if 'KIVY_DOC' not in os.environ:
 
     def SetWindowLong_WndProc_wrapper_generator(func):
         def _closure(hWnd, wndProc):
-            oldAddr = func(hWnd, GWL_WNDPROC, cast(wndProc, c_void_p).value)
+            wndProc = cast(wndProc, c_void_p).value
+            if wndProc is None:
+                return cast(c_void_p(), WNDPROC)
+
+            oldAddr = func(hWnd, GWL_WNDPROC, wndProc)
             return cast(c_void_p(oldAddr), WNDPROC)
 
         return _closure
